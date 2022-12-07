@@ -5,8 +5,9 @@ extern crate test;
 
 #[cfg(test)]
 mod benches {
-    use bip_bencode::{BencodeRef, BDecodeOpt};
     use test::Bencher;
+
+    use bip_bencode::{BDecodeOpt, BencodeRef};
 
     #[bench]
     fn bench_nested_lists(b: &mut Bencher) {

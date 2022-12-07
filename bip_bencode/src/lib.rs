@@ -38,32 +38,32 @@
 #[macro_use]
 extern crate error_chain;
 
+pub use crate::access::bencode::{BMutAccess, BRefAccess, BencodeMutKind, BencodeRefKind};
+pub use crate::access::convert::BConvert;
+pub use crate::access::dict::BDictAccess;
+pub use crate::access::list::BListAccess;
+pub use crate::error::{BencodeConvertError, BencodeConvertErrorKind, BencodeConvertResult};
+pub use crate::error::{BencodeParseError, BencodeParseErrorKind, BencodeParseResult};
+pub use crate::mutable::bencode_mut::BencodeMut;
+pub use crate::reference::bencode_ref::BencodeRef;
+pub use crate::reference::decode_opt::BDecodeOpt;
+
 mod access;
 mod cow;
+mod error;
 mod mutable;
 mod reference;
-mod error;
 
 /// Traits for implementation functionality.
 pub mod inner {
-    pub use cow::BCowConvert;
+    pub use crate::cow::BCowConvert;
 }
 
 /// Traits for extended functionality.
 pub mod ext {
-    pub use access::convert::{BConvertExt};
-    pub use access::bencode::{BRefAccessExt};
+    pub use crate::access::bencode::BRefAccessExt;
+    pub use crate::access::convert::BConvertExt;
 }
-
-pub use reference::bencode_ref::{BencodeRef};
-pub use mutable::bencode_mut::{BencodeMut};
-pub use access::bencode::{BRefAccess, BencodeRefKind, BMutAccess, BencodeMutKind};
-pub use access::convert::{BConvert};
-pub use access::dict::BDictAccess;
-pub use access::list::BListAccess;
-pub use reference::decode_opt::BDecodeOpt;
-pub use error::{BencodeParseError, BencodeParseErrorKind, BencodeParseResult};
-pub use error::{BencodeConvertError, BencodeConvertErrorKind, BencodeConvertResult};
 
 const BEN_END: u8 = b'e';
 const DICT_START: u8 = b'd';
@@ -101,7 +101,7 @@ macro_rules! ben_list {
     ( $($ben:expr),* ) => {
         {
             use bip_bencode::{BencodeMut, BMutAccess};
-            
+
             let mut bencode_list = BencodeMut::new_list();
             {
                 let list = bencode_list.list_mut().unwrap();
@@ -118,24 +118,20 @@ macro_rules! ben_list {
 /// Construct `BencodeMut` bytes by supplying a type convertible to `Vec<u8>`.
 #[macro_export]
 macro_rules! ben_bytes {
-    ( $ben:expr ) => {
-        {
-            use bip_bencode::{BencodeMut};
-            use bip_bencode::inner::BCowConvert;
-            
-            BencodeMut::new_bytes(BCowConvert::convert($ben))
-        }
-    }
+    ( $ben:expr ) => {{
+        use bip_bencode::inner::BCowConvert;
+        use bip_bencode::BencodeMut;
+
+        BencodeMut::new_bytes(BCowConvert::convert($ben))
+    }};
 }
 
 /// Construct a `BencodeMut` integer by supplying an `i64`.
 #[macro_export]
 macro_rules! ben_int {
-    ( $ben:expr ) => {
-        {
-            use bip_bencode::{BencodeMut};
-            
-            BencodeMut::new_int($ben)
-        }
-    }
+    ( $ben:expr ) => {{
+        use bip_bencode::BencodeMut;
+
+        BencodeMut::new_int($ben)
+    }};
 }

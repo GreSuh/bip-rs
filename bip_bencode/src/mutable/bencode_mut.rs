@@ -2,10 +2,10 @@ use std::borrow::Cow;
 use std::collections::BTreeMap;
 use std::str;
 
-use access::bencode::{BencodeMutKind, BMutAccess, BRefAccess, BencodeRefKind};
-use access::dict::BDictAccess;
-use access::list::BListAccess;
-use mutable::encode;
+use crate::access::bencode::{BMutAccess, BRefAccess, BencodeMutKind, BencodeRefKind};
+use crate::access::dict::BDictAccess;
+use crate::access::list::BListAccess;
+use crate::mutable::encode;
 
 /// Bencode object that holds references to the underlying data.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
@@ -23,12 +23,12 @@ pub enum InnerBencodeMut<'a> {
 /// `BencodeMut` object that stores references to some data.
 #[derive(Debug, Eq, PartialEq, Clone, Hash)]
 pub struct BencodeMut<'a> {
-    inner:   InnerBencodeMut<'a>
+    inner: InnerBencodeMut<'a>,
 }
 
 impl<'a> BencodeMut<'a> {
     fn new(inner: InnerBencodeMut<'a>) -> BencodeMut<'a> {
-        BencodeMut{ inner: inner }
+        BencodeMut { inner: inner }
     }
 
     /// Create a new `BencodeMut` representing an `i64`.
@@ -62,15 +62,15 @@ impl<'a> BencodeMut<'a> {
 }
 
 impl<'a> BRefAccess for BencodeMut<'a> {
-    type BKey  = Cow<'a, [u8]>;
+    type BKey = Cow<'a, [u8]>;
     type BType = BencodeMut<'a>;
 
     fn kind<'b>(&'b self) -> BencodeRefKind<'b, Cow<'a, [u8]>, BencodeMut<'a>> {
         match self.inner {
-            InnerBencodeMut::Int(n)       => BencodeRefKind::Int(n),
+            InnerBencodeMut::Int(n) => BencodeRefKind::Int(n),
             InnerBencodeMut::Bytes(ref n) => BencodeRefKind::Bytes(n),
-            InnerBencodeMut::List(ref n)  => BencodeRefKind::List(n),
-            InnerBencodeMut::Dict(ref n)  => BencodeRefKind::Dict(n),
+            InnerBencodeMut::List(ref n) => BencodeRefKind::List(n),
+            InnerBencodeMut::Dict(ref n) => BencodeRefKind::Dict(n),
         }
     }
 
@@ -100,14 +100,14 @@ impl<'a> BRefAccess for BencodeMut<'a> {
         }
     }
 
-    fn list(&self) -> Option<&BListAccess<BencodeMut<'a>>> {
+    fn list(&self) -> Option<&dyn BListAccess<BencodeMut<'a>>> {
         match self.inner {
             InnerBencodeMut::List(ref n) => Some(n),
             _ => None,
         }
     }
 
-    fn dict(&self) -> Option<&BDictAccess<Cow<'a, [u8]>, BencodeMut<'a>>> {
+    fn dict(&self) -> Option<&dyn BDictAccess<Cow<'a, [u8]>, BencodeMut<'a>>> {
         match self.inner {
             InnerBencodeMut::Dict(ref n) => Some(n),
             _ => None,
@@ -118,32 +118,32 @@ impl<'a> BRefAccess for BencodeMut<'a> {
 impl<'a> BMutAccess for BencodeMut<'a> {
     fn kind_mut<'b>(&'b mut self) -> BencodeMutKind<'b, Cow<'a, [u8]>, BencodeMut<'a>> {
         match self.inner {
-            InnerBencodeMut::Int(n)           => BencodeMutKind::Int(n),
+            InnerBencodeMut::Int(n) => BencodeMutKind::Int(n),
             InnerBencodeMut::Bytes(ref mut n) => BencodeMutKind::Bytes((*n).as_ref()),
-            InnerBencodeMut::List(ref mut n)  => BencodeMutKind::List(n),
-            InnerBencodeMut::Dict(ref mut n)  => BencodeMutKind::Dict(n),
+            InnerBencodeMut::List(ref mut n) => BencodeMutKind::List(n),
+            InnerBencodeMut::Dict(ref mut n) => BencodeMutKind::Dict(n),
         }
     }
 
-    fn list_mut(&mut self) -> Option<&mut BListAccess<BencodeMut<'a>>> {
+    fn list_mut(&mut self) -> Option<&mut dyn BListAccess<BencodeMut<'a>>> {
         match self.inner {
             InnerBencodeMut::List(ref mut n) => Some(n),
-            _ => None
+            _ => None,
         }
     }
 
-    fn dict_mut(&mut self) -> Option<&mut BDictAccess<Cow<'a, [u8]>, BencodeMut<'a>>> {
+    fn dict_mut(&mut self) -> Option<&mut dyn BDictAccess<Cow<'a, [u8]>, BencodeMut<'a>>> {
         match self.inner {
             InnerBencodeMut::Dict(ref mut n) => Some(n),
-            _ => None
+            _ => None,
         }
     }
 }
 
 #[cfg(test)]
 mod test {
-    use access::bencode::BMutAccess;
-    use mutable::bencode_mut::BencodeMut;
+    use crate::access::bencode::BMutAccess;
+    use crate::mutable::bencode_mut::BencodeMut;
 
     #[test]
     fn positive_int_encode() {
