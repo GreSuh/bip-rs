@@ -183,9 +183,7 @@ pub trait BConvert {
 
     /// Combines a lookup operation on the given key with a conversion of the value, if found, to a list.
     fn lookup_and_convert_list<'a, B, K1, K2>(
-        &self,
-        dictionary: &'a dyn BDictAccess<K1, B>,
-        key: K2,
+        &self, dictionary: &'a dyn BDictAccess<K1, B>, key: K2,
     ) -> Result<&'a dyn BListAccess<B::BType>, Self::Error>
     where
         B: BRefAccess,
@@ -196,9 +194,7 @@ pub trait BConvert {
 
     /// Combines a lookup operation on the given key with a conversion of the value, if found, to a dictionary.
     fn lookup_and_convert_dict<'a, B, K1, K2>(
-        &self,
-        dictionary: &'a dyn BDictAccess<K1, B>,
-        key: K2,
+        &self, dictionary: &'a dyn BDictAccess<K1, B>, key: K2,
     ) -> Result<&'a dyn BDictAccess<B::BKey, B::BType>, Self::Error>
     where
         B: BRefAccess,

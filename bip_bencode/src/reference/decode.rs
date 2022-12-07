@@ -19,20 +19,20 @@ pub fn decode<'a>(bytes: &'a [u8], pos: usize, opts: BDecodeOpt, depth: usize) -
         crate::INT_START => {
             let (bencode, next_pos) = (decode_int(bytes, pos + 1, crate::BEN_END))?;
             Ok((InnerBencodeRef::Int(bencode, &bytes[pos..next_pos]).into(), next_pos))
-        },
+        }
         crate::LIST_START => {
             let (bencode, next_pos) = (decode_list(bytes, pos + 1, opts, depth))?;
             Ok((InnerBencodeRef::List(bencode, &bytes[pos..next_pos]).into(), next_pos))
-        },
+        }
         crate::DICT_START => {
             let (bencode, next_pos) = (decode_dict(bytes, pos + 1, opts, depth))?;
             Ok((InnerBencodeRef::Dict(bencode, &bytes[pos..next_pos]).into(), next_pos))
-        },
+        }
         crate::BYTE_LEN_LOW..=crate::BYTE_LEN_HIGH => {
             let (bencode, next_pos) = (decode_bytes(bytes, pos))?;
             // Include the length digit, don't increment position
             Ok((InnerBencodeRef::Bytes(bencode, &bytes[pos..next_pos]).into(), next_pos))
-        },
+        }
         _ => Err(BencodeParseError::from_kind(BencodeParseErrorKind::InvalidByte { pos: pos })),
     }
 }
@@ -127,7 +127,7 @@ fn decode_dict<'a>(bytes: &'a [u8], pos: usize, opts: BDecodeOpt, depth: usize) 
                     pos: curr_pos,
                     key: key_bytes.to_vec(),
                 }));
-            },
+            }
             _ => (),
         };
         curr_pos = next_pos;
@@ -140,7 +140,7 @@ fn decode_dict<'a>(bytes: &'a [u8], pos: usize, opts: BDecodeOpt, depth: usize) 
                     pos: curr_pos,
                     key: key_bytes.to_vec(),
                 }));
-            },
+            }
         };
 
         curr_pos = next_pos;
