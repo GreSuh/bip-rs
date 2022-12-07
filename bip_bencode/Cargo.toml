@@ -32,3 +32,4 @@ panic = 'unwind'
 [[test]]
 name = "test"
 path = "test/mod.rs"
+
