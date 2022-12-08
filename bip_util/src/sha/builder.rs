@@ -1,12 +1,19 @@
 use crypto::digest::Digest;
 use crypto::sha1::Sha1;
 
-use sha::{self, ShaHash};
+use crate::sha::{self, ShaHash};
 
 /// Building `ShaHash` objects by adding byte slices to the hash.
 #[derive(Clone)]
 pub struct ShaHashBuilder {
     sha: Sha1,
+}
+
+
+impl Default for ShaHashBuilder {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl ShaHashBuilder {

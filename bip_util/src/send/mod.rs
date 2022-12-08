@@ -1,8 +1,8 @@
 use std::sync::mpsc::{self, TrySendError};
 
-mod split_sender;
+pub use split_sender::{split_sender, SplitSender, SplitSenderAck};
 
-pub use send::split_sender::{SplitSender, SplitSenderAck, split_sender};
+mod split_sender;
 
 /// Trait for generic sender implementations.
 pub trait TrySender<T: Send>: Send {

@@ -57,18 +57,22 @@ impl<T> ContiguousBuffer<T> for Vec<T> where T: Clone {
 
 /// Struct for providing a ContiguousBuffer abstraction over many contiguous buffers.
 pub struct ContiguousBuffers<T> {
-    buffers: Vec<T>
+    buffers: Vec<T>,
+}
+
+impl<T> Default for ContiguousBuffers<T> {
+    fn default() -> Self { Self::new() }
 }
 
 impl<T> ContiguousBuffers<T> {
     /// Create a new empty ContiguousBuffers struct.
     pub fn new() -> ContiguousBuffers<T> {
-         ContiguousBuffers{ buffers: Vec::new() }
+        ContiguousBuffers { buffers: Vec::new() }
     }
 
     /// Create a new ContiguousBuffers struct with an initial element.
     pub fn with_buffer(buffer: T) -> ContiguousBuffers<T> {
-        ContiguousBuffers{ buffers: vec![buffer] }
+        ContiguousBuffers { buffers: vec![buffer] }
     }
 
     /// Pack a value T at the end of the contiguous buffers.
@@ -226,8 +230,8 @@ mod tests {
 
         let mut times_called = 0;
         let mut read_buffer = Vec::new();
-        buffers.read(|buffer| { 
-            times_called += 1; 
+        buffers.read(|buffer| {
+            times_called += 1;
             read_buffer.extend_from_slice(buffer);
         });
 
@@ -243,8 +247,8 @@ mod tests {
 
         let mut times_called = 0;
         let mut read_buffer = Vec::new();
-        buffers.read(|buffer| { 
-            times_called += 1; 
+        buffers.read(|buffer| {
+            times_called += 1;
             read_buffer.extend_from_slice(buffer);
         });
 
@@ -262,8 +266,8 @@ mod tests {
 
         let mut times_called = 0;
         let mut read_buffer = Vec::new();
-        buffers.read(|buffer| { 
-            times_called += 1; 
+        buffers.read(|buffer| {
+            times_called += 1;
             read_buffer.extend_from_slice(buffer);
         });
 
@@ -281,8 +285,8 @@ mod tests {
 
         let mut times_called = 0;
         let mut read_buffer = Vec::new();
-        buffers.read(|buffer| { 
-            times_called += 1; 
+        buffers.read(|buffer| {
+            times_called += 1;
             read_buffer.extend_from_slice(buffer);
         });
 

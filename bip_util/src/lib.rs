@@ -1,9 +1,9 @@
 //! Utilities used by the Bittorrent Infrastructure Project.
 
+extern crate chrono;
 extern crate crypto;
 extern crate num;
 extern crate rand;
-extern crate chrono;
 
 /// Bittorrent specific types.
 pub mod bt;
@@ -35,7 +35,7 @@ pub mod trans;
 pub mod error;
 
 //----------------------------------------------------------------------------//
-use std::mem;
+
 
 /// Applies a Fisher-Yates shuffle on the given list.
 pub fn fisher_shuffle<T: Default>(list: &mut [T]) {
@@ -44,8 +44,8 @@ pub fn fisher_shuffle<T: Default>(list: &mut [T]) {
 
         // Can't push the src_val directly into the swap_index in case i and swap_index
         // are the same value (we will end up setting our index to the default value).
-        let src_val = mem::replace(&mut list[i], T::default());
-        let dst_val = mem::replace(&mut list[swap_index], T::default());
+        let src_val = std::mem::take(&mut list[i]);
+        let dst_val = std::mem::take(&mut list[swap_index]);
 
         list[i] = dst_val;
         list[swap_index] = src_val;
@@ -54,7 +54,6 @@ pub fn fisher_shuffle<T: Default>(list: &mut [T]) {
 
 #[cfg(test)]
 mod tests {
-
     #[test]
     fn positive_fisher_shuffle() {
         let mut test_slice = [1, 2, 3, 4];
